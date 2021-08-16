@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.61"
-        android:background="@color/blue_sky">
+        android:background="@drawable/sky_gradient">
 
-        <ImageView
+        <View
             android:id="@+id/sun"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            android:src="@drawable/sun" />
+            android:background="@drawable/sun_gradient" />
 
     </FrameLayout>
 
@@ -25,6 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.39"
-        android:background="@color/sea" />
+        android:background="@drawable/sea_gradient" />
 
 </LinearLayout>

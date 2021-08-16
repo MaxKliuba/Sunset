@@ -8,9 +8,20 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="bright_sun">#FFFCFCB7</color>
-    <color name="blue_sky">#FF1E7Ac7</color>
-    <color name="sunset_sky">#FFEC8100</color>
-    <color name="night_sky">#FF05192E</color>
-    <color name="sea">#FF224869</color>
+    <color name="day_sun">#FCFCB7</color>
+    <color name="day_sun_center">#F7F6F4</color>
+    <color name="sunset_sun">#FFDA47</color>
+    <color name="sunset_sun_center">#FCFCB7</color>
+    <color name="day_sky_top">#2DA6DC</color>
+    <color name="day_sky_bottom">#AACBDB</color>
+    <color name="sunset_sky_top">#4F91C8</color>
+    <color name="sunset_sky_bottom">#FF5722</color>
+    <color name="night_sky_top">#000D2E</color>
+    <color name="night_sky_bottom">#080F4D</color>
+    <color name="day_sea_top">#6CAEC7</color>
+    <color name="day_sea_bottom">#2D8A9E</color>
+    <color name="sunset_sea_top">#F59A56</color>
+    <color name="sunset_sea_bottom">#71C3B9</color>
+    <color name="night_sea_top">#010310</color>
+    <color name="night_sea_bottom">#142F4B</color>
 </resources>
