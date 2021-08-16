@@ -1,7 +1,7 @@
 package com.maxclub.android.sunset;
 
 import android.animation.ObjectAnimator;
-import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,17 +21,21 @@ public class SunsetFragment extends Fragment {
     private View mSunView;
     private View mSkyView;
     private View mSeaView;
-    ObjectAnimator mHeightAnimator;
-    private AnimationDrawable mSunAnimationDrawable;
-    private AnimationDrawable mSkyAnimationDrawable;
-    private AnimationDrawable mSeaAnimationDrawable;
-    private AnimationDrawable mSunAnimationDrawableRev;
-    private AnimationDrawable mSkyAnimationDrawableRev;
-    private AnimationDrawable mSeaAnimationDrawableRev;
+    private ObjectAnimator mSunMoveYAnimator;
+    private ObjectAnimator mSunScaleXAnimator;
+    private ObjectAnimator mSunScaleYAnimator;
+    private TransitionDrawable mSunDrawableAnim;
+    private TransitionDrawable mSkyDrawableAnim;
+    private TransitionDrawable mSeaDrawableAnim;
     private boolean mIsSunset;
 
     public static SunsetFragment newInstance() {
         return new SunsetFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -49,16 +53,30 @@ public class SunsetFragment extends Fragment {
 
         mIsSunset = true;
 
+        mSunDrawableAnim = (TransitionDrawable) mSunView.getBackground();
+        mSkyDrawableAnim = (TransitionDrawable) mSkyView.getBackground();
+        mSeaDrawableAnim = (TransitionDrawable) mSeaView.getBackground();
+
+        mSunScaleXAnimator = ObjectAnimator
+                .ofFloat(mSunView, "scaleX", 1.5f)
+                .setDuration(4000);
+        mSunScaleXAnimator.setInterpolator(new AccelerateInterpolator());
+
+        mSunScaleYAnimator = ObjectAnimator
+                .ofFloat(mSunView, "scaleY", 1.5f)
+                .setDuration(4000);
+        mSunScaleYAnimator.setInterpolator(new AccelerateInterpolator());
+
         mSceneView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 mSceneView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 float sunYStart = mSunView.getTop();
-                float sunYEnd = mSkyView.getHeight();
-                mHeightAnimator = ObjectAnimator
+                float sunYEnd = mSkyView.getHeight() - mSunView.getHeight() / 2.0f;
+                mSunMoveYAnimator = ObjectAnimator
                         .ofFloat(mSunView, "y", sunYStart, sunYEnd)
-                        .setDuration(5000);
-                mHeightAnimator.setInterpolator(new AccelerateInterpolator());
+                        .setDuration(4000);
+                mSunMoveYAnimator.setInterpolator(new AccelerateInterpolator());
             }
         });
 
@@ -79,78 +97,20 @@ public class SunsetFragment extends Fragment {
     }
 
     private void startSunsetAnimation() {
-        if (mHeightAnimator.isRunning()) {
-            mHeightAnimator.cancel();
-        }
-        if (mSunAnimationDrawableRev != null && mSunAnimationDrawableRev.isRunning()) {
-            mSunAnimationDrawableRev.stop();
-        }
-        if (mSkyAnimationDrawableRev != null && mSkyAnimationDrawableRev.isRunning()) {
-            mSkyAnimationDrawableRev.stop();
-        }
-        if (mSeaAnimationDrawableRev != null && mSeaAnimationDrawableRev.isRunning()) {
-            mSeaAnimationDrawableRev.stop();
-        }
-
-        mHeightAnimator.start();
-
-        mSunView.setBackground(getResources().getDrawable(R.drawable.sun_gradient));
-        mSunAnimationDrawable = (AnimationDrawable) mSunView.getBackground();
-        mSunAnimationDrawable.setEnterFadeDuration(1500);
-        mSunAnimationDrawable.setExitFadeDuration(1500);
-        mSunAnimationDrawable.setOneShot(true);
-        mSunAnimationDrawable.start();
-
-        mSkyView.setBackground(getResources().getDrawable(R.drawable.sky_gradient));
-        mSkyAnimationDrawable = (AnimationDrawable) mSkyView.getBackground();
-        mSkyAnimationDrawable.setEnterFadeDuration(1500);
-        mSkyAnimationDrawable.setExitFadeDuration(1500);
-        mSkyAnimationDrawable.setOneShot(true);
-        mSkyAnimationDrawable.start();
-
-        mSeaView.setBackground(getResources().getDrawable(R.drawable.sea_gradient));
-        mSeaAnimationDrawable = (AnimationDrawable) mSeaView.getBackground();
-        mSeaAnimationDrawable.setEnterFadeDuration(1500);
-        mSeaAnimationDrawable.setExitFadeDuration(1500);
-        mSeaAnimationDrawable.setOneShot(true);
-        mSeaAnimationDrawable.start();
+        mSunMoveYAnimator.start();
+        mSunScaleXAnimator.start();
+        mSunScaleYAnimator.start();
+        mSunDrawableAnim.startTransition(4000);
+        mSkyDrawableAnim.startTransition(4000);
+        mSeaDrawableAnim.startTransition(4000);
     }
 
     private void startSunriseAnimation() {
-        if (mHeightAnimator.isRunning()) {
-            mHeightAnimator.cancel();
-        }
-        if (mSunAnimationDrawable != null && mSunAnimationDrawable.isRunning()) {
-            mSunAnimationDrawable.stop();
-        }
-        if (mSkyAnimationDrawable != null && mSkyAnimationDrawable.isRunning()) {
-            mSkyAnimationDrawable.stop();
-        }
-        if (mSeaAnimationDrawable != null && mSeaAnimationDrawable.isRunning()) {
-            mSeaAnimationDrawable.stop();
-        }
-
-        mHeightAnimator.reverse();
-
-        mSunView.setBackground(getResources().getDrawable(R.drawable.sun_gradient_rev));
-        mSunAnimationDrawableRev = (AnimationDrawable) mSunView.getBackground();
-        mSunAnimationDrawableRev.setEnterFadeDuration(1500);
-        mSunAnimationDrawableRev.setExitFadeDuration(1500);
-        mSunAnimationDrawableRev.setOneShot(true);
-        mSunAnimationDrawableRev.start();
-
-        mSkyView.setBackground(getResources().getDrawable(R.drawable.sky_gradient_rev));
-        mSkyAnimationDrawableRev = (AnimationDrawable) mSkyView.getBackground();
-        mSkyAnimationDrawableRev.setEnterFadeDuration(1500);
-        mSkyAnimationDrawableRev.setExitFadeDuration(1500);
-        mSkyAnimationDrawableRev.setOneShot(true);
-        mSkyAnimationDrawableRev.start();
-
-        mSeaView.setBackground(getResources().getDrawable(R.drawable.sea_gradient_rev));
-        mSeaAnimationDrawableRev = (AnimationDrawable) mSeaView.getBackground();
-        mSeaAnimationDrawableRev.setEnterFadeDuration(1500);
-        mSeaAnimationDrawableRev.setExitFadeDuration(1500);
-        mSeaAnimationDrawableRev.setOneShot(true);
-        mSeaAnimationDrawableRev.start();
+        mSunMoveYAnimator.reverse();
+        mSunScaleXAnimator.reverse();
+        mSunScaleYAnimator.reverse();
+        mSunDrawableAnim.reverseTransition(4000);
+        mSkyDrawableAnim.reverseTransition(4000);
+        mSeaDrawableAnim.reverseTransition(4000);
     }
 }
